@@ -9,6 +9,7 @@ import {
   useScroll,
   useTransform,
   useSpring,
+  useMotionValueEvent,
   type MotionValue,
   useMotionTemplate,
 } from "framer-motion";
@@ -479,9 +480,6 @@ const HeroCardsToBook = () => {
           style={{ opacity: titleOpacity, y: titleY }}
           className="text-center mb-14 relative z-20 px-4"
         >
-          <div className="mb-4 inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-100 text-orange-700 text-xs font-bold uppercase tracking-wider">
-            <Printer size={14} /> Impression Premium
-          </div>
           <h2 className="text-4xl lg:text-6xl font-medium text-neutral-900 tracking-tight">
             Du digital au{" "}
             <span className="text-orange-600 font-secondary text-5xl lg:text-7xl">
@@ -585,6 +583,23 @@ const HeroCardsToBook = () => {
 // --- MAIN PAGE COMPONENT ---
 export default function Home() {
   const [activeFeature, setActiveFeature] = useState(0);
+  const [navHidden, setNavHidden] = useState(false);
+  const { scrollY } = useScroll();
+  const scrollUpOrigin = useRef(0);
+
+  useMotionValueEvent(scrollY, "change", (latest) => {
+    const previous = scrollY.getPrevious() ?? 0;
+    const isScrollingDown = latest > previous;
+
+    if (isScrollingDown && latest > 100) {
+      scrollUpOrigin.current = latest;
+      setNavHidden(true);
+    } else if (!isScrollingDown) {
+      if (scrollUpOrigin.current - latest > 50) {
+        setNavHidden(false);
+      }
+    }
+  });
 
   const containerVariants = {
     hidden: { opacity: 0 },
@@ -628,9 +643,25 @@ export default function Home() {
 
       {/* NAVBAR */}
       <motion.nav
-        initial={{ y: -100, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.8, ease: "circOut" }}
+        initial={{ y: -100, opacity: 0, scale: 0.85 }}
+        animate={
+          navHidden
+            ? { scale: 0.85, y: -80, opacity: 0 }
+            : { scale: 1, y: 0, opacity: 1 }
+        }
+        transition={
+          navHidden
+            ? {
+                scale: { duration: 0.2, ease: "easeIn" },
+                y: { duration: 0.2, delay: 0.12, ease: "easeIn" },
+                opacity: { duration: 0.15, delay: 0.12 },
+              }
+            : {
+                y: { duration: 0.2, ease: "easeOut" },
+                scale: { duration: 0.2, delay: 0.12, ease: "easeOut" },
+                opacity: { duration: 0.15 },
+              }
+        }
         className="fixed top-6 left-0 right-0 z-50 flex justify-center px-4"
       >
         <div className="bg-white/80 backdrop-blur-md border border-white/20 shadow-lg shadow-neutral-200/20 rounded-full px-6 py-3 flex items-center justify-between gap-8 md:gap-12">
