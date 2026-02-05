@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { Suspense, useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Mail, Clock, RefreshCw, Loader2 } from "lucide-react";
@@ -9,6 +9,14 @@ import Button from "@/components/ui/Button";
 const COOLDOWN_SECONDS = 60;
 
 export default function ConfirmYourEmailPage() {
+  return (
+    <Suspense>
+      <ConfirmYourEmailContent />
+    </Suspense>
+  );
+}
+
+function ConfirmYourEmailContent() {
   const searchParams = useSearchParams();
   const email = searchParams.get("email") || "";
 

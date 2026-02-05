@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, useCallback, useRef } from "react";
+import { Suspense, useEffect, useState, useCallback, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import {
   Plus,
@@ -38,6 +38,14 @@ const recipeSchema = z.object({
 const RequiredMark = () => <span className="text-orange-500 ml-1">*</span>;
 
 export default function NewRecipePage() {
+  return (
+    <Suspense>
+      <NewRecipeContent />
+    </Suspense>
+  );
+}
+
+function NewRecipeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { accessToken } = useAuthStore();
