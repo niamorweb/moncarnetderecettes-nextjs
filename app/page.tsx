@@ -29,10 +29,8 @@ import {
 } from "lucide-react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
-// Assurez-vous que le chemin est correct selon votre structure de dossier
 import CoverFront from "@/assets/front-cover-book.png";
 
-// --- UTILS ---
 function cn(...inputs: (string | undefined | null | false)[]) {
   return twMerge(clsx(inputs));
 }
